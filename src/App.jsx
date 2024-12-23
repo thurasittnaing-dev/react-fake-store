@@ -1,53 +1,62 @@
 import {useState,useEffect, useCallback} from 'react'
+import useFetch from './hooks/useFetch';
 import Navbar from './components/Navbar'
 import ProductList from './components/ProductList'
 import LoadingGallaryView from './components/LoadingGallaryView';
 
 function App() {
-
+    const apiEndPoint = "https://fakestoreapi.com/products";
+    const [url, setURL] = useState(apiEndPoint);
     const [isLoading, setIsLoading] = useState(true);
-    const [url, setURL] = useState("https://fakestoreapi.com/products");
     const [activeCategory, setActiveCategory] = useState("");
-    const [products, setProducts] = useState([]);
-
-    const fetchProducts = useCallback(async () => {
-        // Fetching products
-        fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            setProducts(data);
-            setIsLoading(false)
-       });
-   },[url])
+    const {data : products, error} = useFetch(url,setIsLoading);
+    const [filteredProducts, setFilteredProducts] = useState([]);
 
     useEffect(() => {
-        fetchProducts()
-    }, [fetchProducts]);
+        setFilteredProducts(products);
+    }, [products]);
 
+
+    const filterProducts = (keyword) => {
+        const filtered = products.filter(product =>
+            product.title.toLowerCase().includes(keyword.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+    }
     const handleCategoryChange = (category) => {
-        setIsLoading(true)
-        setURL(category == "" ? "https://fakestoreapi.com/products" : `https://fakestoreapi.com/products/category/${category}`);
+        let changeURL = category == "" ? apiEndPoint : `${apiEndPoint}/category/${category}`;
+        setURL(changeURL);
         setActiveCategory(category);
     }
 
+    let data = filteredProducts ? filteredProducts : products;
+
     let loadingGallaryViewData = {
-        handleCategoryChange,
         handleCategoryChange,
         activeCategory
     }
 
     let productListData = {
-        products,
+        products : data,
         handleCategoryChange,
         activeCategory
     }
 
+
+
     return (
         <>
-            <Navbar />
+            <Navbar filterProducts={filterProducts} />
             {
-                isLoading ?
-                <LoadingGallaryView data={loadingGallaryViewData}  /> : <ProductList data={productListData} />
+                error && <div className="mt-[20%] text-center text-red-500 select-none">{error}</div>
+            }
+            {
+                !error && <div>
+                    {
+                        isLoading ?
+                        <LoadingGallaryView data={loadingGallaryViewData}  /> : <ProductList data={productListData} />
+                    }
+                </div>
             }
         </>
     );

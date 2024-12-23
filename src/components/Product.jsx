@@ -12,32 +12,30 @@ export default function Product({product,handleCategoryChange}) {
 
     return (
         <>
-            <div className="w-full max-w-sm relative border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 bg-white">
+            <div className="product-card flex-col py-2">
+                <div className='px-2'>
                     <a href="#" className='flex justify-center'>
-                        <img className="p-8 rounded-t-lg  h-48 object-fill transition-all duration-300 hover:scale-110" src={product.image} alt="product image" />
+                        <img className="product-image" src={product.image} alt="product image" />
                     </a>
-                    <div className="px-5 pb-5">
-                        <div className="max-h-40 min-h-40">
-                            <div className="text-md font-semibold tracking-tight text-gray-900 dark:text-white">
-                                {truncateString(product.title, 50)}
-                            </div>
 
-                            <div className="flex items-center mt-2.5 mb-5">
-                                    <div className="flex items-center space-x-1 rtl:space-x-reverse">
-                                        <StarRating rating={product.rating.rate} />
-                                    </div>
-                                    <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">{product.rating.rate}</span>
-                            </div>
-
-                            <a href="#" onClick={() => handleCategoryChange(encodeURIComponent(product.category))}>
-                                <span className="bg-blue-100 text-blue-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-blue-400 border border-blue-400">{product.category}</span>
-                            </a>
+                    <div className="">
+                        <div className="font-semibold tracking-tight text-gray-900 dark:text-white h-14 max-h-14">
+                            {truncateString(product.title, 45)}
                         </div>
-                        <div className="flex flex-col">
-                            <span className="text-2xl font-bold text-gray-900 dark:text-white">${product.price}</span>
-                            <a href="#" className="text-white mt-4 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Add to cart</a>
+
+                        <div className="flex items-center mt-4">
+                                <div className="flex items-center space-x-1 rtl:space-x-reverse">
+                                    <StarRating rating={product.rating.rate} />
+                                </div>
+                                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded dark:bg-blue-200 dark:text-blue-800 ms-3">{product.rating.rate}</span>
                         </div>
                     </div>
+                </div>
+
+                <div className="flex flex-col px-2">
+                    <span className="price-text">${product.price}</span>
+                    <a href="#" className="add-to-cart-btn">Add to cart</a>
+                </div>
             </div>
         </>
     )
